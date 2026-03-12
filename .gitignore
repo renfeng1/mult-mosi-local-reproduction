@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local datasets and archives
+data/
+*.zip
+*.pkl
+
+# Training outputs
+pre_trained_models/
+reports/logs/
+reports/live_status.json
+reports/epoch_metrics.csv
+reports/gpu_metrics.csv
+
+# Local temp / OS files
+.DS_Store
+Thumbs.db

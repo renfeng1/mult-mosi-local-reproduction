@@ -1,0 +1,31 @@
+{
+  "paper_metrics": {
+    "accuracy": 0.83,
+    "f1": 0.828,
+    "corr": 0.698,
+    "mae": 0.871
+  },
+  "reproduced_metrics": {
+    "accuracy": 0.7987804878048781,
+    "f1": 0.798061710866589,
+    "corr": 0.659315010849986,
+    "mae": 0.9748638
+  },
+  "acceptance_thresholds": {
+    "accuracy": 0.815,
+    "f1": 0.813,
+    "corr": 0.65,
+    "mae": 0.95
+  },
+  "runtime_seconds": 9298.603464841843,
+  "peak_cuda_memory_mb": 8956.82275390625,
+  "speed_comparison_ms": {
+    "monitored_runner": 3872.618484848485,
+    "direct_main_py": 1727.3205
+  },
+  "artifacts": {
+    "report": "C:\\Users\\lilia\\Desktop\\CODEX\\Multimodal-Transformer\\reports\\mosi_report.md",
+    "metrics_plot": "C:\\Users\\lilia\\Desktop\\CODEX\\Multimodal-Transformer\\reports\\figures\\mosi_metrics_vs_paper.png",
+    "speed_plot": "C:\\Users\\lilia\\Desktop\\CODEX\\Multimodal-Transformer\\reports\\figures\\training_speed_comparison.png"
+  }
+}

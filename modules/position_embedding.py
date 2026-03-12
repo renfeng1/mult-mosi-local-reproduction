@@ -12,13 +12,19 @@ def make_positions(tensor, padding_idx, left_pad):
     is added on the left side (left_pad=True) or right side (left_pad=False).
     """
     max_pos = padding_idx + 1 + tensor.size(1)
-    device = tensor.get_device()
+    device = tensor.device
     buf_name = f'range_buf_{device}'
     if not hasattr(make_positions, buf_name):
-        setattr(make_positions, buf_name, tensor.new())
-    setattr(make_positions, buf_name, getattr(make_positions, buf_name).type_as(tensor))
-    if getattr(make_positions, buf_name).numel() < max_pos:
-        torch.arange(padding_idx + 1, max_pos, out=getattr(make_positions, buf_name))
+        setattr(
+            make_positions,
+            buf_name,
+            torch.arange(padding_idx + 1, max_pos, device=device, dtype=tensor.dtype),
+        )
+    else:
+        current = getattr(make_positions, buf_name).to(device=device, dtype=tensor.dtype)
+        if current.numel() < max_pos:
+            current = torch.arange(padding_idx + 1, max_pos, device=device, dtype=tensor.dtype)
+        setattr(make_positions, buf_name, current)
     mask = tensor.ne(padding_idx)
     positions = getattr(make_positions, buf_name)[:tensor.size(1)].expand_as(tensor)
     if left_pad:
@@ -63,7 +69,7 @@ class SinusoidalPositionalEmbedding(nn.Module):
         """Input is expected to be of size [bsz x seqlen]."""
         bsz, seq_len = input.size()
         max_pos = self.padding_idx + 1 + seq_len
-        device = input.get_device()
+        device = input.device
         if device not in self.weights or max_pos > self.weights[device].size(0):
             # recompute/expand embeddings if needed
             self.weights[device] = SinusoidalPositionalEmbedding.get_embedding(
@@ -73,7 +79,7 @@ class SinusoidalPositionalEmbedding(nn.Module):
             )
         self.weights[device] = self.weights[device].type_as(self._float_tensor)
         positions = make_positions(input, self.padding_idx, self.left_pad)
-        return self.weights[device].index_select(0, positions.view(-1)).view(bsz, seq_len, -1).detach()
+        return self.weights[device].index_select(0, positions.reshape(-1)).reshape(bsz, seq_len, -1).detach()
 
     def max_positions(self):
         """Maximum number of supported positions."""
